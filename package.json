@@ -8,7 +8,6 @@
   "scripts": {
     "dev": "turbo dev"
   },
-  "main": "index.js",
   "private": true,
   "author": "Drew Harris",
   "license": "MIT",

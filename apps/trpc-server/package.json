@@ -1,0 +1,11 @@
+{
+  "name": "trpc-server",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "license": "MIT",
+  "dependencies": {
+    "@trpc/server": "^10.12.0",
+    "typescript": "^4.9.5",
+    "zod": "^3.20.6"
+  }
+}

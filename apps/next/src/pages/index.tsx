@@ -1,3 +1,6 @@
+import { trpc } from "@/utils/trpc";
+
 export default function Home() {
-  return <div>Site</div>;
+  const { data } = trpc.hello.useQuery({ text: "Drew" });
+  return <div>{data ? data.greeting : null}</div>;
 }
