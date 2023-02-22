@@ -1,0 +1,18 @@
+{
+  "name": "spotify-sessions",
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev"
+  },
+  "main": "index.js",
+  "private": true,
+  "author": "Drew Harris",
+  "license": "MIT",
+  "dependencies": {
+    "turbo": "^1.8.2"
+  }
+}
