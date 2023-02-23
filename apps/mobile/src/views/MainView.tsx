@@ -7,7 +7,7 @@ export default function MainView() {
   return (
     <SafeAreaView className="bg-red-800 text-white">
       <View>
-        <Text className="bg-red-800 h-full text-white text-xl p-8 font-bold">
+        <Text className="bg-red-800 h-full text-center text-white text-xl p-8 font-bold">
           {error && <Text>{error.message}</Text>}
           {data && <Text>{data.message}</Text>}
         </Text>

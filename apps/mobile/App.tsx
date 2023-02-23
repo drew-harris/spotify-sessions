@@ -10,11 +10,9 @@ export default function App() {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: __DEV__ ? "http://localhost:3000/api/trpc" : "",
-          // optional
-          headers() {
-            return {};
-          },
+          url: __DEV__
+            ? "http://localhost:3000/api/trpc"
+            : "https://spotify-sessions-next.vercel.app/api/trpc",
         }),
       ],
     })
