@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Spotify Sessions",
-    "slug": "app",
+    "name": "Sessions for Spotify",
+    "slug": "spotify-sessions",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,12 +14,10 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "net.drewh.spotify-sessions"
+      "bundleIdentifier": "net.drewh.sessions-for-spotify"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,7 +30,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "589b28b4-cc1f-4b28-881b-30f2e843382d"
+        "projectId": "d05c3977-eece-472d-803a-e148cab7382e"
       }
     }
   }

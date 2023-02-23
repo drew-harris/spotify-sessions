@@ -20,7 +20,7 @@ export default function App() {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <MainView></MainView>
+        <MainView />
       </QueryClientProvider>
     </trpc.Provider>
   );
