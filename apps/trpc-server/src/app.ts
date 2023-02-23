@@ -8,9 +8,11 @@ export const appRouter = router({
         text: z.string(),
       })
     )
-    .query(({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const message = await ctx.prisma.test.findFirst({});
       return {
         greeting: `hello ${input.text}`,
+        message: message?.message,
       };
     }),
 });
