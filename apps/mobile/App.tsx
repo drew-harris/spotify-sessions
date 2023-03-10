@@ -2,7 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import React, { useState } from "react";
 import { trpc } from "./src/utils/trpc";
-import MainView from "./src/views/MainView";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import LogIn from "./src/screens/LogIn";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -17,10 +21,15 @@ export default function App() {
       ],
     })
   );
+
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <MainView />
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Log In" component={LogIn} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </QueryClientProvider>
     </trpc.Provider>
   );

@@ -2,7 +2,8 @@
   "expo": {
     "name": "Sessions for Spotify",
     "slug": "spotify-sessions",
-    "version": "1.0.0",
+    "version": "1.0.2",
+    "scheme": "spotify-sessions",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -14,7 +15,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "net.drewh.sessions-for-spotify"

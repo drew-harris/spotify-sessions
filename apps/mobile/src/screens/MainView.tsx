@@ -4,9 +4,10 @@ import { trpc } from "../utils/trpc";
 
 export default function MainView() {
   const { data, error } = trpc.hello.useQuery({ text: "testme" });
+
   return (
-    <SafeAreaView className="bg-blue-400">
-      <Text className="h-full text-center text-white text-xl p-8 font-bold">
+    <SafeAreaView className="bg-spotify-1">
+      <Text className="h-full text-center text-black text-xl p-8 font-bold">
         {error && <Text>{error.message}</Text>}
         {data && <Text>{data.message}</Text>}
       </Text>
