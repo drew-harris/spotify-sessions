@@ -1,7 +1,12 @@
 import { TRPCError } from "@trpc/server";
+import { users } from "drizzle-schema";
+import { InferModel } from "drizzle-orm/mysql-core/table";
 import { z } from "zod";
 import { procedure, router } from "../trpc";
 import { getPersonFromToken } from "../utils/spotify";
+import { eq } from "drizzle-orm/expressions";
+
+type NewUser = InferModel<typeof users>;
 
 export const userRouter = router({
   signUp: procedure
@@ -12,7 +17,7 @@ export const userRouter = router({
         redirectUri: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       // Spotify OAuth
       try {
         const response = await fetch("https://accounts.spotify.com/api/token", {
@@ -29,26 +34,40 @@ export const userRouter = router({
         });
 
         const data = await response.json();
+        console.log("data", data);
         const person = await getPersonFromToken(data.access_token);
 
         // Find existing user
 
-        // const possibleUser = await ctx.prisma.user.findFirst({
-        //   where: {
-        //     OR: [
-        //       {
-        //         id: person.id,
-        //       },
-        //       {
-        //         email: person.email,
-        //       },
-        //     ],
-        //   },
-        // });
-        //
-        // if (possibleUser) {
-        // } else {
-        // }
+        const possibleUsers = await ctx.db
+          .select()
+          .from(users)
+          .where(eq(users.id, person.id))
+          .limit(1);
+
+        console.log("possible users", possibleUsers);
+
+        if (possibleUsers.length !== 0) {
+          throw new TRPCError({
+            message: "User already exists",
+            code: "BAD_REQUEST",
+          });
+        }
+
+        const newUser: NewUser = {
+          id: person.id,
+          email: person.email,
+          accessToken: data.access_token,
+          refreshToken: data.refresh_token,
+          // TODO: Investigate this one
+          expiresAt: new Date(data.expires_in * 1000 + Date.now()),
+          createdAt: new Date(),
+          displayName: person.display_name ?? null,
+        };
+        //try creating user
+        const user = await ctx.db.insert(users).values(newUser);
+
+        console.log("user", user);
       } catch (error) {
         console.log(error);
         throw new TRPCError({
