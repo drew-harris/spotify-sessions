@@ -1,10 +1,9 @@
 import { initTRPC } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { prisma } from "./db";
 
 export const createContext = (_opts: CreateNextContextOptions) => {
   return {
-    prisma: prisma,
+    // TODO: Add db
   };
 };
 

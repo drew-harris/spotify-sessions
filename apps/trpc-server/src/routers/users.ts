@@ -12,7 +12,7 @@ export const userRouter = router({
         redirectUri: z.string(),
       })
     )
-    .mutation(async ({ input, ctx }) => {
+    .mutation(async ({ input }) => {
       // Spotify OAuth
       try {
         const response = await fetch("https://accounts.spotify.com/api/token", {
@@ -33,22 +33,22 @@ export const userRouter = router({
 
         // Find existing user
 
-        const possibleUser = await ctx.prisma.user.findFirst({
-          where: {
-            OR: [
-              {
-                id: person.id,
-              },
-              {
-                email: person.email,
-              },
-            ],
-          },
-        });
-
-        if (possibleUser) {
-        } else {
-        }
+        // const possibleUser = await ctx.prisma.user.findFirst({
+        //   where: {
+        //     OR: [
+        //       {
+        //         id: person.id,
+        //       },
+        //       {
+        //         email: person.email,
+        //       },
+        //     ],
+        //   },
+        // });
+        //
+        // if (possibleUser) {
+        // } else {
+        // }
       } catch (error) {
         console.log(error);
         throw new TRPCError({
