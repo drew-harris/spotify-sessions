@@ -20,7 +20,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "net.drewh.sessions-for-spotify"
+      "bundleIdentifier": "net.drewh.sessions-for-spotify",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {

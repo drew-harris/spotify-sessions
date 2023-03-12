@@ -1,8 +1,9 @@
+import { authRequired } from "../middleware/authMiddleware";
 import { procedure, router } from "../trpc";
 
 export const protectedRouter = router({
-  test: procedure.query(async ({ input, ctx }) => {
-    console.log("input", input);
-    return { hello: "world" };
+  test: procedure.use(authRequired).query(async ({ input, ctx }) => {
+    console.log("input", ctx.jwt);
+    return { message: "Hello World" };
   }),
 });

@@ -51,10 +51,27 @@ export const userRouter = router({
         console.log("possible users", possibleUsers);
 
         if (possibleUsers.length !== 0) {
-          throw new TRPCError({
-            message: "User already exists",
-            code: "BAD_REQUEST",
+          const user = possibleUsers[0];
+          const payload: Payload = {
+            id: user.id,
+            displayName: user.displayName,
+            email: user.email,
+          };
+
+          if (!process.env.JWT_SECRET) {
+            throw new TRPCError({
+              message: "JWT_SECRET is missing",
+              code: "INTERNAL_SERVER_ERROR",
+            });
+          }
+
+          const token = jwt.sign(payload, process.env.JWT_SECRET, {
+            expiresIn: "1d",
           });
+
+          return {
+            token,
+          };
         }
 
         const newUser: NewUser = {
@@ -90,6 +107,9 @@ export const userRouter = router({
         };
       } catch (error) {
         console.log(error);
+        if (error instanceof TRPCError) {
+          throw error;
+        }
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to sign up",
