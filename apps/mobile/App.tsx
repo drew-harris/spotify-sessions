@@ -5,6 +5,7 @@ import { httpBatchLink } from "@trpc/client";
 import React, { useEffect, useState } from "react";
 import LogIn from "./src/screens/LogIn";
 import Protected from "./src/screens/Protected";
+import superjson from "superjson";
 import { useAuthStore } from "./src/stores/authStore";
 import { trpc } from "./src/utils/trpc";
 
@@ -33,6 +34,7 @@ export default function App() {
           },
         }),
       ],
+      transformer: superjson,
     })
   );
 

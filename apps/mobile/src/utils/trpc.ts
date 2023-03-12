@@ -5,6 +5,7 @@ import {
   httpBatchLink,
 } from "@trpc/react-query";
 import type { AppRouter } from "trpc-server";
+import superjson from "superjson";
 import { useAuthStore } from "../stores/authStore";
 
 export const trpc = createTRPCReact<AppRouter>();
@@ -22,4 +23,5 @@ export const vanilla = createTRPCProxyClient<AppRouter>({
       },
     }),
   ],
+  transformer: superjson,
 });
