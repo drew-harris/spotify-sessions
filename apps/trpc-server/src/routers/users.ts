@@ -1,10 +1,12 @@
 import { TRPCError } from "@trpc/server";
+import jwt from "jsonwebtoken";
 import { users } from "drizzle-schema";
 import { InferModel } from "drizzle-orm/mysql-core/table";
 import { z } from "zod";
 import { procedure, router } from "../trpc";
 import { getPersonFromToken } from "../utils/spotify";
 import { eq } from "drizzle-orm/expressions";
+import { Payload } from "types";
 
 type NewUser = InferModel<typeof users>;
 
@@ -59,15 +61,32 @@ export const userRouter = router({
           email: person.email,
           accessToken: data.access_token,
           refreshToken: data.refresh_token,
-          // TODO: Investigate this one
           expiresAt: new Date(data.expires_in * 1000 + Date.now()),
           createdAt: new Date(),
           displayName: person.display_name ?? null,
         };
         //try creating user
-        const user = await ctx.db.insert(users).values(newUser);
+        await ctx.db.insert(users).values(newUser);
+        const payload: Payload = {
+          id: newUser.id,
+          displayName: newUser.displayName,
+          email: newUser.email,
+        };
 
-        console.log("user", user);
+        if (!process.env.JWT_SECRET) {
+          throw new TRPCError({
+            message: "JWT_SECRET is missing",
+            code: "INTERNAL_SERVER_ERROR",
+          });
+        }
+
+        const token = jwt.sign(payload, process.env.JWT_SECRET, {
+          expiresIn: "1d",
+        });
+
+        return {
+          token,
+        };
       } catch (error) {
         console.log(error);
         throw new TRPCError({

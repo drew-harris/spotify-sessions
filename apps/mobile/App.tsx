@@ -5,8 +5,14 @@ import { trpc } from "./src/utils/trpc";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LogIn from "./src/screens/LogIn";
+import Protected from "./src/screens/Protected";
 
-const Stack = createNativeStackNavigator();
+export type RootStackParamList = {
+  "Log In": undefined;
+  Protected: undefined;
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   const [queryClient] = useState(() => new QueryClient());
@@ -26,8 +32,13 @@ export default function App() {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
             <Stack.Screen name="Log In" component={LogIn} />
+            <Stack.Screen name="Protected" component={Protected} />
           </Stack.Navigator>
         </NavigationContainer>
       </QueryClientProvider>
