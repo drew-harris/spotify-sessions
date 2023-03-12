@@ -12,7 +12,7 @@ export const vanilla = createTRPCProxyClient<AppRouter>({
   links: [
     httpBatchLink({
       url: __DEV__
-        ? "http://localhost:3000/api/trpc"
+        ? "http://192.168.1.39:3000/api/trpc"
         : "https://spotify-sessions-next.vercel.app/api/trpc",
     }),
   ],

@@ -20,6 +20,7 @@ export const userRouter = router({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      console.log("TRYING TO SIGN UP");
       // Spotify OAuth
       try {
         const response = await fetch("https://accounts.spotify.com/api/token", {
