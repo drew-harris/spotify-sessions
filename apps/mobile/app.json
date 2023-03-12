@@ -23,7 +23,8 @@
       "bundleIdentifier": "net.drewh.sessions-for-spotify",
       "config": {
         "usesNonExemptEncryption": false
-      }
+      },
+      "autoincrement": "version"
     },
     "android": {
       "adaptiveIcon": {
