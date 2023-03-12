@@ -4,6 +4,7 @@ import { middleware } from "../trpc";
 
 export const authRequired = middleware(async ({ ctx, next }) => {
   console.log("ctx.jwt", ctx.jwt);
+  console.log("process.env.JWT_SECRET", process.env.JWT_SECRET);
   if (!ctx.jwt) {
     throw new TRPCError({
       message: "Not authenticated",
