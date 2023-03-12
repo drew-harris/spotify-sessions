@@ -1,0 +1,34 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1678572821761,
+      "tag": "0000_big_sumo",
+      "breakpoints": false
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1678573032591,
+      "tag": "0001_redundant_sumo",
+      "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1678573051871,
+      "tag": "0002_magical_punisher",
+      "breakpoints": false
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1678573823009,
+      "tag": "0003_dapper_spyke",
+      "breakpoints": false
+    }
+  ]
+}

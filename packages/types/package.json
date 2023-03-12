@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "license": "MIT",
-  "dependencies": {
-    "@prisma/client": "^4.0.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "typescript": "^4.7.4"
   }
