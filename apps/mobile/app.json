@@ -2,7 +2,7 @@
   "expo": {
     "name": "Sessions for Spotify",
     "slug": "spotify-sessions",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "scheme": "spotify-sessions",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,7 +24,8 @@
       "config": {
         "usesNonExemptEncryption": false
       },
-      "autoincrement": "version"
+      "autoincrement": "version",
+      "buildNumber": "2"
     },
     "android": {
       "adaptiveIcon": {

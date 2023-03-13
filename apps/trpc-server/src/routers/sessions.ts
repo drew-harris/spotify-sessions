@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm/expressions";
+import { desc, eq } from "drizzle-orm/expressions";
 import { Session, sessions } from "drizzle-schema";
 import { authProcedure } from "../middleware/authMiddleware";
 import { router } from "../trpc";
@@ -10,7 +10,8 @@ export const sessionsRouter = router({
       const resultSessions: Session[] = await ctx.db
         .select()
         .from(sessions)
-        .where(eq(sessions.userId, ctx.user.id));
+        .where(eq(sessions.userId, ctx.user.id))
+        .orderBy(desc(sessions.timestamp));
       return resultSessions;
     } catch (error) {
       console.error(error);

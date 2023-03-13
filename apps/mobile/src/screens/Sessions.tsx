@@ -19,7 +19,6 @@ export default function SessionsPage({ navigation }: Props) {
           <SessionCard session={s} key={s.id} />
         ))}
       </View>
-      <StatusBar style="auto" />
     </SafeAreaView>
   );
 }
