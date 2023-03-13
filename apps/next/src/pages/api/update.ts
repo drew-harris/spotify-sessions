@@ -25,18 +25,12 @@ export default async function handler(
     const context = await getListeningContext(token);
     console.log("CONTEXT: ", context);
     if (!context || !context.context || !context?.context.uri) {
-      return res.json({ message: "not an album" });
+      return res.json({ message: "no context" });
     }
 
     if (context.context.type !== "album") {
       console.log("NOT AN ALBUM");
       return res.json({ message: "not an album" });
-    }
-
-    // @ts-ignore // TODO: FIX
-    if (context.item.album.album_group === "single") {
-      console.log("NOT AN ALBUM");
-      return res.json({ message: "single" });
     }
 
     const matchingSessions = await db

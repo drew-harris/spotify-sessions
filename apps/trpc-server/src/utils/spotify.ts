@@ -83,7 +83,7 @@ export async function getListeningContext(token: string) {
       }
     );
     if (response.status != 200) {
-      console.log(await response.json());
+      console.log("TEXT", await response.text());
       return null;
     }
     const data = await response.json();
