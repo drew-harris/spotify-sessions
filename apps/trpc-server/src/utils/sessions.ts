@@ -12,7 +12,8 @@ export const createSession = async (
   }
   const session: Session = {
     id: uuidv4(),
-    timestamp: new Date(context.timestamp),
+    timestamp: new Date(),
+    contextTimestamp: new Date(context.timestamp),
     progress: context.progress_ms || 0,
     trackId: context.item.id,
     albumArt: context.item.album.images[0].url,
@@ -38,7 +39,8 @@ export const updateSession = async (previousSession: Session, context: any) => {
   await db
     .update(sessions)
     .set({
-      timestamp: new Date(context.timestamp),
+      timestamp: new Date(),
+      contextTimestamp: new Date(context.timestamp),
       progress: context.progress_ms || 0,
       trackId: context.item.id,
       albumArt: context.item.album.images[0].url || null,

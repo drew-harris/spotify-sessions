@@ -24,6 +24,7 @@ export const sessions = mysqlTable("sessions", {
   contextUri: text("context_uri").notNull(),
   userId: varchar("user_id", { length: 256 }).references(() => users.id),
   timestamp: timestamp("timestamp").notNull().defaultNow(),
+  contextTimestamp: timestamp("context_timestamp").notNull().defaultNow(),
   externalUrl: text("external_url").notNull(),
 
   trackId: text("track_id").notNull(),
