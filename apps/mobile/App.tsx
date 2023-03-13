@@ -50,6 +50,7 @@ export default function App() {
             screenOptions={{
               headerShown: false,
             }}
+            initialRouteName="Sessions"
           >
             <Stack.Screen name="Log In" component={LogIn} />
             <Stack.Screen name="Sessions" component={SessionsPage} />

@@ -1,7 +1,11 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useState } from "react";
 import {
+  Alert,
   Button,
   Image,
+  Pressable,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   Text,
@@ -14,22 +18,36 @@ type Props = NativeStackScreenProps<RootStackParamList, "Sessions">;
 
 export default function SessionsPage({ navigation }: Props) {
   const { data, refetch } = trpc.sessions.homepage.useQuery();
+  const [refreshing, setRefreshing] = useState(false);
   const playMutation = trpc.sessions.listen.useMutation({
     onSuccess: (result) => {
       if (result === "OK") {
         refetchPlayingUri();
       }
     },
+
+    onError: (e) => {
+      Alert.alert("Error", e.message, [
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
+    },
   });
 
   const { data: playingUri, refetch: refetchPlayingUri } =
-    trpc.sessions.listening.useQuery({});
+    trpc.sessions.listening.useQuery();
 
   const playSession = (sessionId: string) => {
     console.log("playSession", sessionId);
     playMutation.mutate({
       sessionId,
     });
+  };
+
+  const update = async () => {
+    setRefreshing(true);
+    await updateListening();
+    await refetch();
+    setRefreshing(false);
   };
 
   const updateListening = async () => {
@@ -42,24 +60,15 @@ export default function SessionsPage({ navigation }: Props) {
 
   return (
     <SafeAreaView className="bg-gray-800 text-white h-full">
-      <Button title="Back" onPress={() => navigation.pop()}></Button>
-      <ScrollView className="p-4">
-        <Text className="text-center  text-white text-xl mb-2 font-bold">
-          Sessions page
-        </Text>
-        <Button
-          title="refresh"
-          onPress={() => {
-            refetch();
-            refetchPlayingUri();
-          }}
-        ></Button>
-        <Button
-          title="listen"
-          onPress={() => {
-            updateListening();
-          }}
-        ></Button>
+      <ScrollView
+        className="p-4"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => update()}
+          ></RefreshControl>
+        }
+      >
         {data?.map((s) => (
           <SessionCard
             playSession={playSession}
@@ -80,7 +89,7 @@ const SessionCard = ({
 }: {
   session: RouterOutput["sessions"]["homepage"][0];
   playSession: (sessionId: string) => void;
-  currentlyPlaying: string | undefined;
+  currentlyPlaying: string | undefined | null;
 }) => {
   return (
     <View className="border-gray-700 border-2 m-1 p-2 flex flex-row">
@@ -88,12 +97,11 @@ const SessionCard = ({
       <View className="ml-3">
         <Text className="text-white font-bold">{session.albumName}</Text>
         <Text className="text-white text-sm">{session.trackName}</Text>
+        <Text className="text-white text-xs">{session.progress}</Text>
         {currentlyPlaying !== session.contextUri && (
-          <Button
-            color={"#ffffff"}
-            onPress={() => playSession(session.id)}
-            title="Play"
-          ></Button>
+          <Pressable onPress={() => playSession(session.id)}>
+            <Text className="text-white mt-4">Play</Text>
+          </Pressable>
         )}
       </View>
     </View>

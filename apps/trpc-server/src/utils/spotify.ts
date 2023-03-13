@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm/expressions";
 import { Session, User, users } from "drizzle-schema";
 import { db } from "../db";
@@ -109,9 +110,17 @@ export async function playSession(session: Session, token: string) {
       Authorization: "Bearer " + token,
     },
   });
+  if (repsonse.status === 404) {
+    console.log("throwing no device");
+    throw new TRPCError({
+      message: "No Active Device",
+      code: "CONFLICT",
+    });
+  }
   if (repsonse.status !== 204) {
     console.log("Failed to play session");
-    console.log(await repsonse.json());
     throw new Error("Failed to play session");
   }
+
+  return repsonse.status;
 }
