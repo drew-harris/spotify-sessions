@@ -1,8 +1,15 @@
 import { TRPCError } from "@trpc/server";
-import { desc, eq } from "drizzle-orm/expressions";
-import { Session, sessions } from "drizzle-schema";
+import { and, desc, eq } from "drizzle-orm/expressions";
+import { Session, sessions, users } from "drizzle-schema";
+import { z } from "zod";
+import { db } from "../db";
 import { authProcedure } from "../middleware/authMiddleware";
 import { router } from "../trpc";
+import {
+  getFreshToken,
+  getListeningContext,
+  playSession,
+} from "../utils/spotify";
 
 export const sessionsRouter = router({
   homepage: authProcedure.query(async ({ ctx }) => {
@@ -20,5 +27,69 @@ export const sessionsRouter = router({
         code: "INTERNAL_SERVER_ERROR",
       });
     }
+  }),
+
+  listen: authProcedure
+    .input(
+      z.object({
+        sessionId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        console.log("Listening to session");
+        const pair =
+          (
+            await db
+              .select()
+              .from(sessions)
+              .innerJoin(users, eq(sessions.userId, users.id))
+              .where(
+                and(
+                  eq(sessions.userId, ctx.user.id),
+                  eq(sessions.id, input.sessionId)
+                )
+              )
+          ).at(0) || null;
+        if (!pair) {
+          throw new TRPCError({
+            message: "No Session Found",
+            code: "NOT_FOUND",
+          });
+        }
+        console.log("Found session", pair);
+        const result = await playSession(
+          pair.sessions,
+          await getFreshToken(pair.users)
+        );
+        return "OK" as const;
+      } catch (error) {
+        if (error instanceof TRPCError) {
+          console.error(error);
+          throw error;
+        }
+        throw new TRPCError({
+          message: "Internal Server Error",
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+    }),
+
+  listening: authProcedure.query(async ({ ctx }) => {
+    const user = (
+      await ctx.db.select().from(users).where(eq(users.id, ctx.user.id))
+    ).at(0);
+
+    if (!user) {
+      throw new TRPCError({
+        message: "No User Found",
+        code: "NOT_FOUND",
+      });
+    }
+    const token = await getFreshToken(user);
+
+    const context = await getListeningContext(token);
+
+    return context?.context?.uri;
   }),
 });

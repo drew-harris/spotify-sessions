@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm/expressions";
-import { User, users } from "drizzle-schema";
+import { Session, User, users } from "drizzle-schema";
 import { db } from "../db";
 
 export async function getPersonFromToken(token: string) {
@@ -91,5 +91,27 @@ export async function getListeningContext(token: string) {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+}
+
+export async function playSession(session: Session, token: string) {
+  const repsonse = await fetch("https://api.spotify.com/v1/me/player/play", {
+    method: "PUT",
+    body: JSON.stringify({
+      context_uri: session.contextUri,
+      offset: {
+        uri: session.trackUri,
+      },
+      position_ms: session.progress,
+    }),
+
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  if (repsonse.status !== 204) {
+    console.log("Failed to play session");
+    console.log(await repsonse.json());
+    throw new Error("Failed to play session");
   }
 }
