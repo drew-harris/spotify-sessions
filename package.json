@@ -13,6 +13,6 @@
   "author": "Drew Harris",
   "license": "MIT",
   "dependencies": {
-    "turbo": "^1.8.2"
+    "turbo": "^1.8.3"
   }
 }
