@@ -23,8 +23,9 @@ export default async function handler(
     }
     const token = await getFreshToken(user[0]);
     const context = await getListeningContext(token);
+    console.log("CONTEXT: ", context);
     if (!context || !context.context || !context?.context.uri) {
-      return;
+      return res.json({ message: "not an album" });
     }
 
     if (context.context.type !== "album") {

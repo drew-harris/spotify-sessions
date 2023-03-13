@@ -4,14 +4,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import React, { useEffect, useState } from "react";
 import LogIn from "./src/screens/LogIn";
-import Protected from "./src/screens/Protected";
 import superjson from "superjson";
 import { useAuthStore } from "./src/stores/authStore";
 import { trpc } from "./src/utils/trpc";
+import SessionsPage from "./src/screens/Sessions";
+import { SafeAreaView, StatusBar } from "react-native";
 
 export type RootStackParamList = {
   "Log In": undefined;
-  Protected: undefined;
+  Sessions: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -52,7 +53,7 @@ export default function App() {
             }}
           >
             <Stack.Screen name="Log In" component={LogIn} />
-            <Stack.Screen name="Protected" component={Protected} />
+            <Stack.Screen name="Sessions" component={SessionsPage} />
           </Stack.Navigator>
         </NavigationContainer>
       </QueryClientProvider>

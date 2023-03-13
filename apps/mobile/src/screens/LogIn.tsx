@@ -43,7 +43,7 @@ export default function LogIn({ navigation }: Props) {
           redirectUri: makeRedirectUri({}),
         })
         .then((res) => {
-          navigation.navigate("Protected");
+          navigation.navigate("Sessions");
           setJwt(res.token);
           console.log("TOKEN: ", res.token);
         })
@@ -54,8 +54,8 @@ export default function LogIn({ navigation }: Props) {
   }, [request, response, promptAsync]);
 
   return (
-    <SafeAreaView className="bg-spotify-1 h-full">
-      <Text className="text-center text-black text-xl p-8 font-bold">
+    <SafeAreaView className="bg-gray-800 text-white h-full">
+      <Text className="text-center text-white text-xl p-8 font-bold">
         Log In
       </Text>
       <Button
@@ -65,11 +65,9 @@ export default function LogIn({ navigation }: Props) {
         }}
       />
       <View className="p-4">
-        <Text>{JSON.stringify(response)}</Text>
-        <Text>{sample}</Text>
         <Button
-          title="Go to protected"
-          onPress={() => navigation.navigate("Protected")}
+          title="Go to sessions"
+          onPress={() => navigation.navigate("Sessions")}
         ></Button>
       </View>
 

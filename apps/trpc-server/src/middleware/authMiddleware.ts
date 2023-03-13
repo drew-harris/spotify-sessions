@@ -1,7 +1,7 @@
-import { TRPCError } from "@trpc/server";
+import { router, TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
 import { Payload } from "types";
-import { middleware } from "../trpc";
+import { middleware, procedure } from "../trpc";
 
 export const authRequired = middleware(async ({ ctx, next }) => {
   if (!ctx.jwt) {
@@ -30,3 +30,5 @@ export const authRequired = middleware(async ({ ctx, next }) => {
     });
   }
 });
+
+export const authProcedure = procedure.use(authRequired);

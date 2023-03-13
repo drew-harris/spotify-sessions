@@ -7,6 +7,10 @@ import {
 import type { AppRouter } from "trpc-server";
 import superjson from "superjson";
 import { useAuthStore } from "../stores/authStore";
+import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+
+export type RouterInput = inferRouterInputs<AppRouter>;
+export type RouterOutput = inferRouterOutputs<AppRouter>;
 
 export const trpc = createTRPCReact<AppRouter>();
 
