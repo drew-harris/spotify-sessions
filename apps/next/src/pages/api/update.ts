@@ -36,7 +36,7 @@ export default async function handler(
     // @ts-ignore // TODO: FIX
     if (context.item.album.album_group === "single") {
       console.log("NOT AN ALBUM");
-      return res.json({ message: "not an album" });
+      return res.json({ message: "single" });
     }
 
     const matchingSessions = await db
