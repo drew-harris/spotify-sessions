@@ -4,7 +4,6 @@ import superjson from "superjson";
 import { db } from "./db";
 
 export const createContext = (opts: CreateNextContextOptions) => {
-  console.log("createContext", opts.req.headers["auth"]);
   return {
     // TODO: Add db
     db: db,

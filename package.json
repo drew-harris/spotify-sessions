@@ -6,7 +6,8 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "turbo dev"
+    "dev": "turbo dev",
+    "build": "turbo build"
   },
   "private": true,
   "author": "Drew Harris",

@@ -19,7 +19,13 @@ export default function LogIn({ navigation }: Props) {
   const [request, response, promptAsync] = useAuthRequest(
     {
       clientId: "5b940c8bf0104d1099da47063cadfe80",
-      scopes: ["user-read-email", "playlist-modify-public"],
+      scopes: [
+        "user-read-email",
+        "user-read-playback-position",
+        "user-read-recently-played",
+        "user-read-playback-state",
+        "user-read-currently-playing",
+      ],
       usePKCE: false,
       redirectUri: makeRedirectUri({}),
     },

@@ -1,3 +1,13 @@
 export default function Home() {
-  return <div>Hello2</div>;
+  const update = async () => {
+    const response = await fetch("/api/update");
+    if (response.ok) {
+      console.log("Updated");
+    }
+  };
+  return (
+    <div>
+      <button onClick={update}>Test Update</button>
+    </div>
+  );
 }

@@ -1,10 +1,9 @@
 import { TRPCError } from "@trpc/server";
 import jwt from "jsonwebtoken";
+import { Payload } from "types";
 import { middleware } from "../trpc";
 
 export const authRequired = middleware(async ({ ctx, next }) => {
-  console.log("ctx.jwt", ctx.jwt);
-  console.log("process.env.JWT_SECRET", process.env.JWT_SECRET);
   if (!ctx.jwt) {
     throw new TRPCError({
       message: "Not authenticated",
@@ -21,7 +20,7 @@ export const authRequired = middleware(async ({ ctx, next }) => {
     const decoded = jwt.verify(ctx.jwt, process.env.JWT_SECRET);
     return next({
       ctx: {
-        user: decoded,
+        user: decoded as Payload,
       },
     });
   } catch (error) {
