@@ -89,7 +89,6 @@ export const sessionsRouter = router({
     const token = await getFreshToken(user);
 
     const context = await getListeningContext(token);
-    console.log("IS PLAYING: ", context?.is_playing);
     if (!context?.is_playing) {
       return null;
     }

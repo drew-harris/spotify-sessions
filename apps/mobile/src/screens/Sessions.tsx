@@ -2,8 +2,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useState } from "react";
 import {
   Alert,
-  Button,
   Image,
+  Linking,
   Pressable,
   RefreshControl,
   SafeAreaView,
@@ -26,9 +26,27 @@ export default function SessionsPage({ navigation }: Props) {
       }
     },
 
-    onError: (e) => {
+    onError: (e, reqSession) => {
       Alert.alert("Error", e.message, [
         { text: "OK", onPress: () => console.log("OK Pressed") },
+        {
+          text: "Open Track In App",
+          onPress: () => {
+            const session = data?.find((s) => s.id == reqSession.sessionId);
+            if (session) {
+              const url =
+                "https://open.spotify.com/track/" +
+                session.trackId +
+                "?" +
+                new URLSearchParams({
+                  context: session.contextUri,
+                  position_ms: session.progress.toString(),
+                  pms: session.progress.toString(),
+                });
+              Linking.openURL(url);
+            }
+          },
+        },
       ]);
     },
   });
@@ -59,7 +77,7 @@ export default function SessionsPage({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView className="bg-gray-800 text-white h-full">
+    <SafeAreaView className="bg-gray-900 text-white h-full">
       <ScrollView
         className="p-4"
         refreshControl={
@@ -92,12 +110,11 @@ const SessionCard = ({
   currentlyPlaying: string | undefined | null;
 }) => {
   return (
-    <View className="border-gray-700 border-2 m-1 p-2 flex flex-row">
+    <View className="m-1 bg-gray-800 rounded-lg p-3 flex flex-row">
       <Image source={{ uri: session.albumArt, width: 80, height: 80 }}></Image>
       <View className="ml-3">
         <Text className="text-white font-bold">{session.albumName}</Text>
         <Text className="text-white text-sm">{session.trackName}</Text>
-        <Text className="text-white text-xs">{session.progress}</Text>
         {currentlyPlaying !== session.contextUri && (
           <Pressable onPress={() => playSession(session.id)}>
             <Text className="text-white mt-4">Play</Text>
