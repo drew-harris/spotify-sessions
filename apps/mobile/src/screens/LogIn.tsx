@@ -16,6 +16,7 @@ type Props = NativeStackScreenProps<RootStackParamList, "Log In">;
 
 export default function LogIn({ navigation }: Props) {
   const setJwt = useAuthStore((s) => s.setJwt);
+  const setExpires = useAuthStore((s) => s.setExpires);
   const [request, response, promptAsync] = useAuthRequest(
     {
       clientId: "5b940c8bf0104d1099da47063cadfe80",
@@ -44,8 +45,8 @@ export default function LogIn({ navigation }: Props) {
           redirectUri: makeRedirectUri({}),
         })
         .then((res) => {
-          navigation.navigate("Sessions");
           setJwt(res.token);
+          setExpires(res.expiresIn);
           console.log("TOKEN: ", res.token);
         })
         .catch((e) => {
@@ -56,23 +57,14 @@ export default function LogIn({ navigation }: Props) {
 
   return (
     <SafeAreaView className="bg-gray-800 text-white h-full">
-      <Text className="text-center text-white text-xl p-8 font-bold">
-        Log In
-      </Text>
-      <Button
-        title="Login"
-        onPress={() => {
-          promptAsync();
-        }}
-      />
-      <View className="p-4">
+      <View className="mt-16">
         <Button
-          title="Go to sessions"
-          onPress={() => navigation.navigate("Sessions")}
-        ></Button>
+          title="Login With Spotify"
+          onPress={() => {
+            promptAsync();
+          }}
+        />
       </View>
-
-      <StatusBar style="auto" />
     </SafeAreaView>
   );
 }

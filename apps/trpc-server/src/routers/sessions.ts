@@ -95,4 +95,38 @@ export const sessionsRouter = router({
 
     return context?.context?.uri || null;
   }),
+
+  delete: authProcedure
+    .input(
+      z.object({
+        sessionId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const result = await db
+          .delete(sessions)
+          .where(
+            and(
+              eq(sessions.id, input.sessionId),
+              eq(sessions.userId, ctx.user.id)
+            )
+          );
+
+        if (result[0].affectedRows == 1) {
+          return "OK" as const;
+        } else {
+          throw new TRPCError({
+            message: "Could not find session",
+            code: "NOT_FOUND",
+          });
+        }
+      } catch (error) {
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({
+          message: "Internal Server Error",
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+    }),
 });

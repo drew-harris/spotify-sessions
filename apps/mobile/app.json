@@ -2,7 +2,7 @@
   "expo": {
     "name": "Sessions for Spotify",
     "slug": "spotify-sessions",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "scheme": "spotify-sessions",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

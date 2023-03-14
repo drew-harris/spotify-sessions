@@ -12,20 +12,16 @@ import {
   View,
 } from "react-native";
 import { RootStackParamList } from "../../App";
+import { useAuthStore } from "../stores/authStore";
 import { RouterOutput, trpc } from "../utils/trpc";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Sessions">;
 
 export default function SessionsPage({ navigation }: Props) {
+  const signOut = useAuthStore((s) => s.signOut);
   const { data, refetch } = trpc.sessions.homepage.useQuery();
   const [refreshing, setRefreshing] = useState(false);
   const playMutation = trpc.sessions.listen.useMutation({
-    onSuccess: (result) => {
-      if (result === "OK") {
-        refetchPlayingUri();
-      }
-    },
-
     onError: (e, reqSession) => {
       Alert.alert("Error", e.message, [
         { text: "OK", onPress: () => console.log("OK Pressed") },
@@ -43,6 +39,7 @@ export default function SessionsPage({ navigation }: Props) {
                   position_ms: session.progress.toString(),
                   pms: session.progress.toString(),
                 });
+
               Linking.openURL(url);
             }
           },
@@ -50,9 +47,6 @@ export default function SessionsPage({ navigation }: Props) {
       ]);
     },
   });
-
-  const { data: playingUri, refetch: refetchPlayingUri } =
-    trpc.sessions.listening.useQuery();
 
   const playSession = (sessionId: string) => {
     console.log("playSession", sessionId);
@@ -63,23 +57,23 @@ export default function SessionsPage({ navigation }: Props) {
 
   const update = async () => {
     setRefreshing(true);
-    await updateListening();
-    await refetch();
+    const listeningPromise = updateListening();
+    const refetchPromise = refetch();
+    await Promise.all([listeningPromise, refetchPromise]);
     setRefreshing(false);
   };
 
   const updateListening = async () => {
     try {
       await fetch("https://spotify-sessions-next.vercel.app/api/update");
-      refetchPlayingUri();
       refetch();
     } catch (error) {}
   };
 
   return (
-    <SafeAreaView className="bg-gray-900 text-white h-full">
+    <SafeAreaView style={{ flex: 1 }} className="bg-gray-900 text-white h-full">
       <ScrollView
-        className="p-4"
+        className="p-6"
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -87,14 +81,13 @@ export default function SessionsPage({ navigation }: Props) {
           ></RefreshControl>
         }
       >
+        <Text className="text-white font-bold text-3xl">Sessions</Text>
         {data?.map((s) => (
-          <SessionCard
-            playSession={playSession}
-            currentlyPlaying={playingUri}
-            session={s}
-            key={s.id}
-          />
+          <SessionCard playSession={playSession} session={s} key={s.id} />
         ))}
+        <Pressable onPress={() => signOut()}>
+          <Text>Sign Out</Text>
+        </Pressable>
       </ScrollView>
     </SafeAreaView>
   );
@@ -103,23 +96,24 @@ export default function SessionsPage({ navigation }: Props) {
 const SessionCard = ({
   session,
   playSession,
-  currentlyPlaying,
 }: {
   session: RouterOutput["sessions"]["homepage"][0];
   playSession: (sessionId: string) => void;
-  currentlyPlaying: string | undefined | null;
 }) => {
   return (
-    <View className="m-1 bg-gray-800 rounded-lg p-3 flex flex-row">
-      <Image source={{ uri: session.albumArt, width: 80, height: 80 }}></Image>
-      <View className="ml-3">
-        <Text className="text-white font-bold">{session.albumName}</Text>
+    <View className="m-1 bg-gray-800 overflow-hidden rounded-lg p-3 flex flex-row">
+      <Image
+        source={{ uri: session.albumArt, width: 80, height: 80 }}
+        className="rounded-md"
+      ></Image>
+      <View className="ml-3 overflow-hidden">
+        <Text className="text-white font-bold text-ellipsis">
+          {session.albumName}
+        </Text>
         <Text className="text-white text-sm">{session.trackName}</Text>
-        {currentlyPlaying !== session.contextUri && (
-          <Pressable onPress={() => playSession(session.id)}>
-            <Text className="text-white mt-4">Play</Text>
-          </Pressable>
-        )}
+        <Pressable onPress={() => playSession(session.id)}>
+          <Text className="text-white underline mt-4">Play</Text>
+        </Pressable>
       </View>
     </View>
   );

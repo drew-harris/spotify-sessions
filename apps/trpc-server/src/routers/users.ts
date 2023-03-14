@@ -66,14 +66,17 @@ export const userRouter = router({
           }
 
           const token = jwt.sign(payload, process.env.JWT_SECRET, {
-            expiresIn: "1d",
+            expiresIn: "12d",
           });
 
           return {
             token,
+            // 12 days from now
+            expiresIn: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000),
           };
         }
 
+        // FOR NEW USERS
         const newUser: NewUser = {
           id: person.id,
           email: person.email,
@@ -99,11 +102,13 @@ export const userRouter = router({
         }
 
         const token = jwt.sign(payload, process.env.JWT_SECRET, {
-          expiresIn: "1d",
+          expiresIn: "12d",
         });
 
         return {
           token,
+          // 12 days from now
+          expiresIn: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000),
         };
       } catch (error) {
         console.log(error);

@@ -6,12 +6,14 @@ import React, { useEffect, useState } from "react";
 import superjson from "superjson";
 import LogIn from "./src/screens/LogIn";
 import SessionsPage from "./src/screens/Sessions";
+import SplashScreen from "./src/screens/Splash";
 import { useAuthStore } from "./src/stores/authStore";
 import { trpc } from "./src/utils/trpc";
 
 export type RootStackParamList = {
   "Log In": undefined;
   Sessions: undefined;
+  Splash: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -42,6 +44,16 @@ export default function App() {
     initializeAuth();
   }, []);
 
+  const isAuthed = useAuthStore((s) => {
+    if (!s.jwt) return false;
+    if (!s.expires) return false;
+    if (s.expires < new Date()) return false;
+    return true;
+  });
+
+  const loaded = useAuthStore((s) => s.loaded);
+  if (!loaded) return null;
+
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
@@ -52,8 +64,12 @@ export default function App() {
             }}
             initialRouteName="Sessions"
           >
-            <Stack.Screen name="Log In" component={LogIn} />
-            <Stack.Screen name="Sessions" component={SessionsPage} />
+            {!loaded && <Stack.Screen name="Splash" component={SplashScreen} />}
+            {isAuthed && loaded ? (
+              <Stack.Screen name="Sessions" component={SessionsPage} />
+            ) : (
+              <Stack.Screen name="Log In" component={LogIn} />
+            )}
           </Stack.Navigator>
         </NavigationContainer>
       </QueryClientProvider>
